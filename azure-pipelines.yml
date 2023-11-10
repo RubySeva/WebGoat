@@ -8,10 +8,9 @@ jobs:
 - job: Build
   displayName: 'Build Maven Project'
   steps:
-  - task: UseJavaVersion@1
-    inputs:
-      versionSpec: '11'
-      addToPath: true
+  - script: |
+      sudo apt-get install -y maven
+    displayName: 'Install Maven'
 
   - script: 'mvn clean install'
     displayName: 'Maven Build' 
@@ -21,6 +20,8 @@ jobs:
   displayName: 'Mend Unified Agent Scan'
   steps:
   - script: |
+      sudo apt-get install -y maven
+
       # Download Unified Agent
       curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar
       echo Unified Agent downloaded successfully
