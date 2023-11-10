@@ -1,19 +1,24 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- main
+- main  
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+jobs:
+- job: MendScan
+  displayName: 'Mend Unified Agent Scan'
+  steps:
+  - script: |
+      # Download Unified Agent
+      curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar
+      echo Unified Agent downloaded successfully
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+      # Run Unified Agent
+      java -jar wss-unified-agent.jar
+    displayName: 'Download and Run Unified Agent'
+    env:
+      WS_APIKEY: $(APIKEY)
+      WS_USERKEY: $(USERKEY)
+      WS_WSS_URL: $(WSS_URL)
+      WS_PRODUCTNAME: AZDO_$(WebGoatAzure)
+      WS_PROJECTNAME: $(WebGoat)
