@@ -28,7 +28,7 @@ jobs:
       java -jar wss-unified-agent.jar -v
 
       # Run Unified Agent with Maven integration and WS_maven environment variables
-      java -jar wss-unified-agent.jar -d $(Build.SourcesDirectory) -r
+      java -jar wss-unified-agent.jar 
       # This assumes the pom.xml is in the root of your repository
 
       # Capture the exit code for error checking
