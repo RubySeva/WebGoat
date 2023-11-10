@@ -4,35 +4,42 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-jobs:
-- job: Build
-  displayName: 'Build Maven Project'
-  steps:
-  - script: |
-      sudo apt-get install -y maven
-    displayName: 'Install Maven'
+steps:
+## Maven example - Replace with your build steps
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'clean install'
+    mavenOptions: -DskipTests=true
+    publishJUnitResults: false
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+    mavenVersionOption: 'Default'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: false
+## end maven example
 
-  - script: 'mvn clean install'
-    displayName: 'Maven Build' 
-
-
-- job: MendScan
-  displayName: 'Mend Unified Agent Scan'
-  steps:
-  - script: |
-      sudo apt-get install -y maven
-
-      # Download Unified Agent
+# The Unified Agent scan should be called AFTER a package manager build step such as "mvn clean install -DskipTests=true" or "npm install --only=prod"
+- script: |
+      echo Downloading Mend Unified Agent
       curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar
-      echo Unified Agent downloaded successfully
 
-      # Run Unified Agent
-      java -jar wss-unified-agent.jar
-    displayName: 'Download and Run Unified Agent'
-    env:
-      WS_APIKEY: $(APIKEY)
-      WS_USERKEY: $(USERKEY)
-      WS_WSS_URL: $(WSS_URL)
-      WS_PRODUCTNAME: AZDO_$(WebGoatAzure)
-      WS_PROJECTNAME: $(WebGoat)
+      if [[ "$(curl -sL https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar.sha256)" != "$(sha256sum wss-unified-agent.jar)" ]] ; then
+        echo "Integrity Check Failed"
+      else
+        echo "Integrity Check Passed"
+        echo Starting Mend Scan
+        java -jar wss-unified-agent.jar
+      fi
+  env:
+    WS_APIKEY: $(APIKEY)
+    WS_USERKEY: $(USERKEY)
+    WS_WSS_URL: https://saas.mend.io/agent
+    WS_PRODUCTNAME: AZDO_$(System.TeamProject)
+    WS_PROJECTNAME: $(Build.Repository.Name)_$(Build.SourceBranchName)
+    WS_FILESYSTEMSCAN: false
+    WS_MAVEN.RESOLVEDEPENDENCIES: TRUE
+    WS_RUNPRESTEP: TRUE
+  displayName: 'Mend Scan'
 
