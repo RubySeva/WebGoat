@@ -18,11 +18,10 @@ jobs:
 
 - job: MendScan
   displayName: 'Mend Unified Agent Scan'
-  dependsOn: InstallMaven
   steps:
   - script: |
       # Download Unified Agent
-      curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar
+       curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar
       echo Unified Agent downloaded successfully
 
       # Run Unified Agent with Maven integration and WS_maven environment variables
