@@ -8,7 +8,7 @@ jobs:
 - job: Build
   displayName: 'Build Maven Project'
   steps:
-  - task: UseJavaVersion@0
+  - task: UseJavaVersion@1
     inputs:
       versionSpec: '11'
       addToPath: true
@@ -34,3 +34,4 @@ jobs:
       WS_WSS_URL: $(WSS_URL)
       WS_PRODUCTNAME: AZDO_$(WebGoatAzure)
       WS_PROJECTNAME: $(WebGoat)
+
