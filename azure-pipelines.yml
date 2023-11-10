@@ -8,13 +8,14 @@ jobs:
 - job: Build
   displayName: 'Build Maven Project'
   steps:
-  - task: UseJavaVersion@1
+  - task: UseJavaVersion@0
     inputs:
       versionSpec: '11'
       addToPath: true
 
   - script: 'mvn clean install'
     displayName: 'Maven Build' 
+
 
 - job: MendScan
   displayName: 'Mend Unified Agent Scan'
