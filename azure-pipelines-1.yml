@@ -1,0 +1,32 @@
+trigger:
+- main
+
+pool:
+  vmImage: windows-latest
+
+steps:
+- powershell: |
+    Write-Host "WhiteSourceToken = $(WhiteSourceToken)"
+
+    Write-Host "Downloading WhiteSource Unified Agent"
+    try {
+        Invoke-WebRequest -Uri https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar -OutFile wss-unified-agent.jar -ErrorAction Stop
+        Write-Host "Download successful"
+    } catch {
+        Write-Host "Download failed: $_"
+        exit 1  # Mark the build as failed
+    }
+
+    Write-Host "Java Version"
+    java -version
+
+    Write-Host "WhiteSource Scan"
+    try {
+        java -jar wss-unified-agent.jar -d "Android/"
+        Write-Host "WhiteSource Scan successful"
+    } catch {
+        Write-Host "WhiteSource Scan failed: $_"
+        exit 1  # Mark the build as failed
+    }
+  displayName: 'Run White Source'
+
