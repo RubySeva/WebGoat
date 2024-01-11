@@ -19,6 +19,11 @@ jobs:
 - job: MendScan
   displayName: 'Mend Unified Agent Scan'
   steps:
+  - task: WhiteSource@21
+    inputs:
+      cwd: '$(System.DefaultWorkingDirectory)'
+      projectName: 'TestingTaskProjectName'
+
   - script: |
       # Download Unified Agent
       curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar
@@ -43,7 +48,6 @@ jobs:
         # Additional error handling or notification can be added here
       fi
     displayName: 'Run Unified Agent Scan'
-
 
     env:
       WS_APIKEY: $(APIKEY)
