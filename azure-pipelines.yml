@@ -24,29 +24,6 @@ jobs:
       cwd: '$(System.DefaultWorkingDirectory)'
       projectName: 'TestingTaskProjectName'
 
-  - script: |
-      # Download Unified Agent
-      curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar
-      echo Unified Agent downloaded successfully
-
-      # Display the Unified Agent version
-      java -jar wss-unified-agent.jar -v
-
-      # Run Unified Agent with Maven integration and WS_maven environment variables
-      java -jar wss-unified-agent.jar 
-      # This assumes the pom.xml is in the root of your repository
-
-      # Capture the exit code for error checking
-      exit_code=$?
-
-      # Display exit code for debugging
-      echo "Unified Agent exit code: $exit_code"
-
-      # Check for specific error conditions (adjust as needed)
-      if [ $exit_code -ne 0 ]; then
-        echo "Unified Agent encountered an error. Check logs for details."
-        # Additional error handling or notification can be added here
-      fi
     displayName: 'Run Unified Agent Scan'
 
     env:
