@@ -16,21 +16,16 @@ jobs:
       mvn -version
     displayName: 'Install and Check Maven'
 
-- job: MendScan
-  displayName: 'Mend Unified Agent Scan'
-  steps:
-  - task: WhiteSource@21
-    inputs:
-      cwd: '$(System.DefaultWorkingDirectory)'
-      projectName: 'TestingTaskProjectName'
+  - script: |
+      curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar
+      echo Unified Agent downloaded successfully
+      java -jar wss-unified-agent.jar
 
-    displayName: 'Run Unified Agent Scan'
 
     env:
-      WS_FILESYSTEMSCAN: false
-      WS_MAVEN.RESOLVEDEPENDENCIES: TRUE
-      WS_RUNPRESTEP: TRUE
-      ws_scanReportTimeoutMinutes: 1
-      WS_GENERATESCANREPORT: TRUE
-
+      WS_APIKEY: $(APIKEY)
+      WS_WSS_URL: $(WSS_URL)
+      WS_PRODUCTNAME: AZDO_$(System.TeamProject)
+      WS_PROJECTNAME: $(Build.Repository.Name)_$(Build.SourceBranchName)
+    displayName: 'Mend Unified Agent Scan'
 
